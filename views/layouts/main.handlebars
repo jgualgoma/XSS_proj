@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+
+<style>
+
+
+
+</style>
+
+
+
+<html lang="en">
+  <head>
+    <title>Comments Section</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    {{!-- <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"> --}}
+    <link rel="stylesheet" href="comment_style.css" />
+  </head>
+  <body>
+	<div class="comments-container">
+		<h1>Comments</h1>
+
+		<ul id="comments-list" class="comments-list">
+			<li>
+				<div class="comment-main-level">
+
+					<div class="comment-avatar"><img src="avatar_1.jpg" alt=""></div>
+
+					<div class="comment-box">
+						<div class="comment-head">
+							<h6 class="comment-name by-author"><a href="#">Random Commenter 1</a></h6>
+							<span>20 minutes ago</span>
+							<i class="fa fa-reply"></i>
+							<i class="fa fa-heart"></i>
+						</div>
+						<div class="comment-content">
+                            This is a fictional comment section for a fictional website. We will demonstrate XSS (Cross site Scripting) using this comment section
+						</div>
+					</div>
+				</div>
+
+				<ul class="comments-list reply-list">
+					<li>
+
+						<div class="comment-avatar"><img src="avatar_2.jpg" alt=""></div>
+
+						<div class="comment-box">
+							<div class="comment-head">
+								<h6 class="comment-name"><a href="#">Random Commenter 2</a></h6>
+								<span>10 minutes ago</span>
+								<i class="fa fa-reply"></i>
+								<i class="fa fa-heart"></i>
+							</div>
+							<div class="comment-content">
+								There will be a comment box below where you can insert either a comment or some javascript code. Some examples are given above in the blog post
+							</div>
+						</div>
+					</li>
+
+					<li>
+
+						<div class="comment-avatar"><img src="avatar_1.jpg" alt=""></div>
+
+						<div class="comment-box">
+							<div class="comment-head">
+								<h6 class="comment-name by-author"><a href="#">Random Commenter 1</a></h6>
+								<span>5 minutes ago</span>
+								<i class="fa fa-reply"></i>
+								<i class="fa fa-heart"></i>
+							</div>
+
+							<div class="comment-content">
+								Once you hit the submit button, the page will be reloaded and you should see the effects should you have posted malicious code
+							</div>
+						</div>
+					</li>
+				</ul>
+			</li>
+
+			<li>
+				<div class="comment-main-level">
+
+					<div class="comment-avatar"><img src="avatar_2.jpg" alt=""></div>
+
+					<div class="comment-box">
+						<div class="comment-head">
+							<h6 class="comment-name"><a href="#">Random Commenter 2</a></h6>
+							<span>2 minutes ago</span>
+							<i class="fa fa-reply"></i>
+							<i class="fa fa-heart"></i>
+						</div>
+						<div class="comment-content">
+                            This works because improperly sanitized inputs can be interpreted as code by the browser. The comments are stored in a database, and when loaded, will run on any subsequent machine that makes a request to this page
+						</div>
+					</div>
+				</div>
+			</li>
+                 {{#each dataStore}}    
+            	<li>
+				<div class="comment-main-level">
+
+					<div class="comment-avatar"><img src="avatar_3.jpg" alt=""></div>
+
+					<div class="comment-box">
+						<div class="comment-head">
+							<h6 class="comment-name"><a href="#">Your Comments</a></h6>
+							<span>1 minute ago</span>
+							<i class="fa fa-reply"></i>
+							<i class="fa fa-heart"></i>
+						</div>
+						<div class="comment-content">
+                            {{{this}}}
+						</div>
+					</div>
+				</div>
+                {{/each}}
+			</li>
+		</ul>
+
+        <div class="container pb-cmnt-container">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3">
+            <div class="panel panel-info">
+                <div class="panel-body">
+                    <textarea placeholder="Write your comment here and press share to post it!" id= 'comment_text' class="pb-cmnt-textarea"></textarea>
+                    <form class="form-inline">
+                       
+                        <button class="btn pb-cmnt-button" type="button" onclick="submitComment()">Share</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+	</div>
+
+    
+</div>
+
+<style>
+    .pb-cmnt-container {
+        font-family: Lato;
+        margin-top: 100px;
+    }
+
+    .pb-cmnt-textarea {
+        resize: none;
+        padding: 20px;
+        height: 130px;
+        justify-content: center; 
+        align-items: center;  
+        width: 100%;
+        border: 1px solid #F2F2F2;
+    }
+
+    .pb-cmnt-button {
+        background-color: #04AA6D; /* Green */
+        border: none;
+        color: white;
+        padding: 15px 32px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 16px;
+        }
+</style>
+
+
+<script>
+  
+  async function submitComment() {
+    const comment = document.getElementById('comment_text').value
+    console.log(comment)
+    if (!comment) {
+      console.log(comment)
+      alert('Comment Cannot be empty');
+      return;
+    }
+
+    try {
+      const response = await fetch('/add-comment', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ text: comment.trim() })
+      });
+      if (response.ok) {
+        location.reload(); // reload to show new comment
+      } else {
+        throw new Error("Response was not 200")
+      }
+    } catch (err) {
+      console.error('Error:', err);
+      alert('An error occured, please look at logs');
+    }
+  }
+</script>
+
+
+
+
+  </body>
+</html>
